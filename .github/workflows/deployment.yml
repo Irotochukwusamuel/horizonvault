@@ -26,9 +26,6 @@ jobs:
           server: ${{ secrets.FTP_HOST }}  # Add your cPanel FTP server
           username: ${{ secrets.FTP_USERNAME }}  # Your FTP username (add as secret in GitHub)
           password: ${{ secrets.FTP_PASSWORD }}  # Your FTP password (add as secret in GitHub)
-          local-dir: ./  # The local directory to upload from
-          server-dir: /core/  # Your cPanel server directory
-          protocol: ftps  # or ftp based on your setup
 
       - name: Restart Python App via cPanel API
         env:
