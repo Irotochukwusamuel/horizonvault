@@ -1,0 +1,42 @@
+name: Deploy Python App to cPanel
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get install python3-pip python3-dev python3-venv -y
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Upload Files via FTP to cPanel
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          sudo apt-get install lftp -y
+          lftp -e "
+            set ssl:verify-certificate no;
+            mirror --reverse --delete --verbose ./ /core/;
+            bye
+          " -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST
+
+      - name: Restart Python App via cPanel API
+        env:
+          CPANEL_USER: ${{ secrets.CPANEL_USER }}
+          CPANEL_PASSWORD: ${{ secrets.CPANEL_PASSWORD }}
+          CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
+        run: |
+          curl -u $CPANEL_USER:$CPANEL_PASSWORD https://$CPANEL_DOMAIN:2083/execute/Python/restart --data-raw "app=core"
