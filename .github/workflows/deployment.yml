@@ -28,7 +28,7 @@ jobs:
         run: |
           sudo apt-get install lftp -y
           lftp -e "
-            set ssl:verify-certificate no;
+            set ftp:ssl-allow no;
             mirror --reverse --delete --verbose ./ /core/;
             bye
           " -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST
