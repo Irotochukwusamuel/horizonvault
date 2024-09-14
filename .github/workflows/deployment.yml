@@ -20,18 +20,15 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: Upload Files via FTP to cPanel
-        env:
-          FTP_HOST: ${{ secrets.FTP_HOST }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-        run: |
-          sudo apt-get install lftp -y
-          lftp -e "
-            set ftp:ssl-allow no;
-            mirror --reverse --delete --verbose ./ /core/;
-            bye
-          " -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST
+      - name: Upload files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ${{ secrets.FTP_HOST }}  # Add your cPanel FTP server
+          username: ${{ secrets.FTP_USERNAME }}  # Your FTP username (add as secret in GitHub)
+          password: ${{ secrets.FTP_PASSWORD }}  # Your FTP password (add as secret in GitHub)
+          local-dir: ./  # The local directory to upload from
+          server-dir: /core  # Your cPanel server directory
+          protocol: ftps  # or ftp based on your setup
 
       - name: Restart Python App via cPanel API
         env:
