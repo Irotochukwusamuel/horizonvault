@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description:
+  This is a SAM template for lol-api which is a Serverless API for
+  composing and managing Lots of Lists..
+
+Globals:
+  Function:
+    Timeout: 900
+    Tags:
+      #Environment: !Ref Env
+      Team: Backend Team
+
+Parameters:
+  Region:
+    Type: String
+
+  Env:
+    Type: String
+    Description: "Environment where you want to deploy this stack"
+    Default: dev
+    AllowedValues:
+      - dev
+      - stage
+      - prod
+
+  LambdaLogGroupPrefix:
+    Type: "String"
+    Description: "Prefix  for cloudwatch loggroup"
+    Default: "/aws/lambda/"
+
+  LogGroupRetentionInDays:
+    Type: "String"
+    Description: "No of days Log Group need to retain"
+    Default: "30"
+
+  ExecEnv:
+    Type: String
+    AllowedValues:
+      - local
+      - dev
+      - stage
+      - prod
+    Default: prod
+
+Resources:
+  OverdraftFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'keyhub-${Env}'
+      CodeUri: src/
+      Role: "arn:aws:iam::630589988206:role/lambdaAllQueryExecutionAllAccessRole"
+      Handler: app.app
+      Runtime: python3.8
+      Environment:
+        Variables:
+          REQUIRES_AUTHENTICATION: true
+          ENV: !Ref Env
+
+
+Outputs:
+  OverdraftFunction:
+    Description: "Post Overdraft Lambda Function ARN"
+    Value: !GetAtt OverdraftFunction.Arn
