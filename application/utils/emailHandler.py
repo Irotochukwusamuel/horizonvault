@@ -65,7 +65,7 @@ class EmailHandler:
         return cls.send_email(recipient, subject, username, body)
 
     @classmethod
-    def send_otp(cls, recipient, otp, token):
+    def send_otp(cls, recipient, otp):
         subject = 'Your Key Academy Account OTP'
         body = f"""
 
@@ -74,7 +74,7 @@ class EmailHandler:
                 </p>
 
                 <!-- Add your reset password link -->
-                <a href="https://keyhub-frontend.vercel.app/auth/password-setup?token={token}&email={recipient}" class="mb-20">Reset Password</a>
+                <a href="https://keyhub-frontend.vercel.app/auth/password-setup?email={recipient}" class="mb-20">Reset Password</a>
 
         """
 

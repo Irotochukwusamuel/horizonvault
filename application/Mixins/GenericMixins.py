@@ -17,12 +17,12 @@ class GenericMixin(object):
 
     @declared_attr
     def created_at(cls):
-        return db.Column(BigInteger, default=func.extract('epoch', func.current_timestamp()))
+        return db.Column(BigInteger, default=func.unix_timestamp(func.now()))
 
     @declared_attr
     def last_updated(cls):
-        return db.Column(BigInteger, default=func.extract('epoch', func.current_timestamp()),
-                         onupdate=func.extract('epoch', func.current_timestamp()))
+        return db.Column(BigInteger, default=func.unix_timestamp(func.now()),
+                         onupdate=func.unix_timestamp(func.now()))
 
     def to_dict(cls, add_filter=True):
         return {'user_id' if column.name == 'id' and add_filter else column.name: getattr(cls, column.name) for

@@ -21,7 +21,16 @@ def login():
     req = request.json
     email = req.get('email')
     password = req.get('password')
-    return authenticationModel.Login(email, password)
+    return authenticationModel.login(email, password)
+
+
+@auth_blueprint.route('/sign-up', methods=['POST'])
+def signup():
+    req = request.json
+    email = req.get('email')
+    password = req.get('password')
+    username = req.get('username')
+    return authenticationModel.signUp(email, password, username)
 
 
 @auth_blueprint.route('/update-password', methods=['POST'])
@@ -33,37 +42,11 @@ def update_password():
     return authenticationModel.update_password(email, code, password)
 
 
-@auth_blueprint.route('/set-password', methods=['POST'])
-def admin_set_password():
-    req = request.json
-    email = req.get('email')
-    password = req.get('password')
-    return authenticationModel.admin_set_up_password(email, password)
-
-
-@auth_blueprint.route('/set-user-password', methods=['POST'])
-def set_user_password():
-    req = request.json
-    email = req.get('email')
-    password = req.get('password')
-    token = req.get('token')
-    return authenticationModel.set_up_password(email, password, token)
-
-
 @auth_blueprint.route('/reset-password', methods=['POST'])
 def reset_password():
     req = request.json
     email = req.get('email')
     return authenticationModel.reset_password(email)
-
-
-@auth_blueprint.route('/invite-link', methods=['POST'])
-@jwt_required()
-def invite_user():
-    req = request.json
-    email = req.get('email')
-    type = req.get('type')
-    return authenticationModel.invite_link(email, type)
 
 
 @auth_blueprint.route('/ping', methods=['GET'])

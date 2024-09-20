@@ -12,6 +12,7 @@ import datetime
 
 class User(db.Model, GenericMixin):
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(250), nullable=True, unique=True)
     email = db.Column(db.String(250), nullable=True, unique=True)
     msisdn = db.Column(db.String(250), nullable=True, unique=True)
     password = db.Column(db.String(350), nullable=True)
@@ -28,7 +29,6 @@ class User(db.Model, GenericMixin):
 
     wallets = db.relationship('Wallet', back_populates='user', cascade="all, delete-orphan")
     confirmation_codes = db.relationship('ConfirmationCode', back_populates='user', cascade="all, delete-orphan")
-    notifications = db.relationship("Notification", back_populates='user', cascade="all, delete-orphan")
     referrals_made = db.relationship("Referral", back_populates="referrer", lazy='dynamic', foreign_keys='Referral.referrer_id')
     referrals_received = db.relationship("Referral", back_populates="referred", lazy='dynamic', foreign_keys='Referral.referred_id')
 
@@ -56,6 +56,12 @@ class User(db.Model, GenericMixin):
         return False
 
     @classmethod
+    def is_username_exists(cls, username):
+        if cls.query.filter_by(username=username).first():
+            raise CustomException(message="Username already exists", status_code=401)
+        return False
+
+    @classmethod
     def is_msisdn_exists(cls, msisdn):
         if cls.query.filter_by(msisdn=msisdn).first():
             raise CustomException(message="Phone number already exists", status_code=401)
@@ -69,10 +75,9 @@ class User(db.Model, GenericMixin):
         return user
 
     @classmethod
-    def CreateUser(cls, email, msisdn, role, password=None):
+    def CreateUser(cls, email, username, password):
         try:
-            user = User(email=email, msisdn=msisdn, password=password)
-            user.roles = role
+            user = User(email=email, username=username, password=password)
             db.session.add(user)
             db.session.commit()
             db.session.refresh(user)
