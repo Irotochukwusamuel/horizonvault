@@ -1,4 +1,3 @@
-from application.models.audit import Audit
 from application.models.confirmation_code import ConfirmationCode
 from application.models.country import Country
 from application.models.state import State
