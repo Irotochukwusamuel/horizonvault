@@ -2,8 +2,7 @@ from exceptions.codes import ExceptionCode
 
 
 class CustomException(Exception):
-    def __init__(self, exception_code=None, status_code=500, payload=None, response_code=1999,
-                 message="Internal Server Error. Please try again later"):
+    def __init__(self, exception_code=None, status_code=500, payload=None, response_code=1999, message="Internal Server Error. Please try again later"):
         Exception.__init__(self)
         self.message = exception_code.value['message'] if exception_code else message
         self.status_code = exception_code.value['status_code'] if exception_code else status_code
