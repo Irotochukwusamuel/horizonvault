@@ -4,11 +4,6 @@ from . import *
 class Wallets:
 
     @classmethod
-    def create_wallet(cls, wallet_name, wallet_type):
-        Wallet.create_wallet(wallet_type, wallet_name, current_user)
-        return "Wallet created successfully"
-
-    @classmethod
     def fetch_wallet(cls, wallet_id):
         res: Wallet = Wallet.query.filter_by(wallet_id=wallet_id, user=current_user).first()
         if not res:

@@ -4,14 +4,22 @@ import os
 import hashlib
 
 
+class Coins(db.Model, GenericMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text, nullable=True, unique=True)
+    symbol = db.Column(db.Text, nullable=True, unique=True)
+    logo = db.Column(db.Text, nullable=True, unique=True)
+    wallets = db.relationship("Wallet", back_populates='coins')
+
+
 class Wallet(db.Model, GenericMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    wallet_type = db.Column(db.String(350), nullable=True)
-    wallet_name = db.Column(db.String(350), nullable=True)
+    coin_id = db.Column(db.Integer, db.ForeignKey('coins.id'))
     wallet_id = db.Column(db.Text, nullable=True, unique=True)
     user = db.relationship("User", back_populates='wallets')
     is_active = db.Column(db.Boolean, default=True)
+    coins = db.relationship("Coins", back_populates='wallets')
 
     @classmethod
     def generate_wallet_id(cls) -> str:
@@ -22,10 +30,3 @@ class Wallet(db.Model, GenericMixin):
         wallet_id = hashlib.new('ripemd160', public_key.encode()).hexdigest()
 
         return wallet_id
-
-    @classmethod
-    def create_wallet(cls, wallet_type, wallet_name, user) -> bool:
-        create = Wallet(wallet_type=wallet_type, wallet_name=wallet_name, wallet_id=cls.generate_wallet_id(), user=user)
-        create.save(refresh=True)
-        return True
-
