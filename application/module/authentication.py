@@ -12,6 +12,10 @@ class Authentication:
 
     @staticmethod
     def signUp(email: str, password: str, username: str):
+
+        if not email or not password or not username:
+            raise CustomException(message="invalid data passed", status_code=401)
+
         try:
             User.is_email_exists(email)
             User.is_username_exists(username)
@@ -19,6 +23,7 @@ class Authentication:
             user = User.CreateUser(email, username, password.decode())
             user.referral_id = Referral.generate_referral_id(user.id)
             user.save(refresh=True)
+            Wallet.generate_wallets(user)
             access_token, refresh_token = User.generate_access_token(user)
             return return_json(
                 OutputObj(
@@ -32,6 +37,10 @@ class Authentication:
 
     @staticmethod
     def login(email, password):
+
+        if not email or not password:
+            raise CustomException(message="invalid data passed", status_code=401)
+
         user: User = User.query.filter_by(email=email).first()
 
         if user and user.isDeactivated:
@@ -49,6 +58,10 @@ class Authentication:
 
     @staticmethod
     def update_password(email: str, code: str, password):
+
+        if not email or not password:
+            raise CustomException(message="invalid data passed", status_code=401)
+
         _user: User = User.query.filter_by(email=email).first()
 
         if not _user:
@@ -69,6 +82,9 @@ class Authentication:
 
     @staticmethod
     def reset_password(email):
+        if not email :
+            raise CustomException(message="invalid data passed", status_code=401)
+
         user: User = User.query.filter_by(email=email).first()
 
         if not user:

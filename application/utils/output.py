@@ -19,7 +19,7 @@ def return_json(output):
     for k in del_keys:
         del output.__dict__[k]
     # jsonStr = json.dumps(output.__dict__, cls=DecimalEncoder)
-    return jsonify(output.__dict__)
+    return jsonify(output.__dict__), output.code
 
 
 class OutputObj:

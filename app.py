@@ -10,6 +10,7 @@ EXEC_ENV = os.environ.get('EXEC_ENV')
 
 # BLUEPRINT REGISTRATION
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
+app.register_blueprint(wallet_blueprint, url_prefix='/wallet')
 
 
 @jwt.user_lookup_loader

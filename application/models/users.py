@@ -27,10 +27,13 @@ class User(db.Model, GenericMixin):
     has_email_notification_enabled = db.Column(db.Boolean, default=False)
     deactivate_reason = db.Column(db.String(450), nullable=True)
 
-    wallets = db.relationship('Wallet', back_populates='user', cascade="all, delete-orphan")
-    confirmation_codes = db.relationship('ConfirmationCode', back_populates='user', cascade="all, delete-orphan")
+    wallets = db.relationship('Wallet', back_populates='user', cascade="all, delete")
+    confirmation_codes = db.relationship('ConfirmationCode', back_populates='user', cascade="all, delete")
     referrals_made = db.relationship("Referral", back_populates="referrer", lazy='dynamic', foreign_keys='Referral.referrer_id')
     referrals_received = db.relationship("Referral", back_populates="referred", lazy='dynamic', foreign_keys='Referral.referred_id')
+    sent_transactions = db.relationship("Transactions", back_populates='sender_user', foreign_keys='Transactions.sender_id')
+    received_transactions = db.relationship("Transactions", back_populates='receiver_user', foreign_keys='Transactions.receiver_id')
+    transactions = db.relationship("Transactions", back_populates="user", cascade="all,delete", foreign_keys="Transactions.user_id")
 
     def as_dict(self, include_sensitive_info=False):
         """
