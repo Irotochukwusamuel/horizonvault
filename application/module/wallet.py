@@ -3,7 +3,7 @@ import random
 from sqlalchemy import or_
 
 from . import *
-from application.models.transactions import TransactionType
+from application.models.transactions import TransactionType, TransactionStatus
 
 
 class Wallets:
@@ -105,7 +105,8 @@ class Wallets:
             transaction_type=TransactionType.TRANSACT_C2C,
             coins=sender_account.coins,
             receiver_user=receiver,
-            sender_user=current_user
+            sender_user=current_user,
+            status=TransactionStatus.APPROVED
         )
         trans.save(refresh=True)
 
@@ -114,4 +115,14 @@ class Wallets:
     @classmethod
     def history(cls):
         trans: List[Transactions] = Transactions.query.filter(or_(Transactions.sender_user == current_user, Transactions.receiver_user == current_user)).order_by(Transactions.id).all()
-        return [{**x.to_dict()} for x in trans]
+        return [
+            {
+                **x.to_dict(),
+                "transaction_type": x.transaction_type.value,
+                "status": x.status.value,
+                "coin": x.coins.to_dict(),
+                "receiver": x.receiver_user.to_dict() if x.receiver_user else None,
+                "sender": x.sender_user.to_dict() if x.sender_user else None
+            }
+            for x in trans
+        ]
