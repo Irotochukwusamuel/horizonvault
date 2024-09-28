@@ -23,7 +23,6 @@ class Authentication:
             user = User.CreateUser(email, username, password.decode())
             user.referral_id = Referral.generate_referral_id(user.id)
             user.save(refresh=True)
-            Wallet.generate_wallets(user)
             access_token, refresh_token = User.generate_access_token(user)
             return return_json(
                 OutputObj(
@@ -34,6 +33,11 @@ class Authentication:
             )
         except Exception as e:
             raise e
+
+    @staticmethod
+    def setup_account():
+        Wallet.generate_wallets(current_user)
+        return "Account setup is completed."
 
     @staticmethod
     def login(email, password):
@@ -82,7 +86,7 @@ class Authentication:
 
     @staticmethod
     def reset_password(email):
-        if not email :
+        if not email:
             raise CustomException(message="invalid data passed", status_code=401)
 
         user: User = User.query.filter_by(email=email).first()

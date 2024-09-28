@@ -3,6 +3,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 from application.module.authentication import Authentication
 from application.utils.output import return_json, OutputObj
+from application.api import authenticate
 
 auth_blueprint = Blueprint('auth', __name__)
 authenticationModel = Authentication()
@@ -31,6 +32,12 @@ def signup():
     password = req.get('password')
     username = req.get('username')
     return authenticationModel.signUp(email, password, username)
+
+
+@auth_blueprint.route('/account-setup', methods=['GET'])
+@authenticate()
+def account_setup():
+    return return_json(OutputObj(message="Account setup", data=authenticationModel.setup_account(), code=200))
 
 
 @auth_blueprint.route('/update-password', methods=['POST'])
