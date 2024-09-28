@@ -1,3 +1,5 @@
+from typing import List
+
 from application import db
 from application.Mixins.GenericMixins import GenericMixin
 import os
@@ -26,15 +28,16 @@ class Wallet(db.Model, GenericMixin):
 
     @classmethod
     def generate_wallets(cls, user) -> bool:
-        coins = Coins.query.all()
+        coins: List[Coins] = Coins.query.all()
         for coin in coins:
             try:
                 private_key = os.urandom(32)
-
-                public_key = hashlib.sha256(private_key).hexdigest()
-                wallet_id = hashlib.new('ripemd160', public_key.encode()).hexdigest()
-                w = Wallet(user=user, coins=coin, wallet_id=wallet_id)
-                w.save(refresh=True)
+                w_exists = cls.query.filter(cls.coin_id == coin.id).first()
+                if not w_exists:
+                    public_key = hashlib.sha256(private_key).hexdigest()
+                    wallet_id = hashlib.new('ripemd160', public_key.encode()).hexdigest()
+                    w = Wallet(user=user, coins=coin, wallet_id=wallet_id)
+                    w.save(refresh=True)
             except Exception:
                 continue
         return True
