@@ -72,7 +72,7 @@ class User(db.Model, GenericMixin):
 
     @classmethod
     def GetUser(cls, user_id):
-        user = User.query.filter_by(id=user_id).first()
+        user = cls.query.filter_by(id=user_id).first()
         if not user:
             raise CustomException(message="User does not exist", status_code=404)
         return user
@@ -80,7 +80,7 @@ class User(db.Model, GenericMixin):
     @classmethod
     def CreateUser(cls, email, username, password):
         try:
-            user = User(email=email, username=username, password=password)
+            user = cls(email=email, username=username, password=password)
             db.session.add(user)
             db.session.commit()
             db.session.refresh(user)

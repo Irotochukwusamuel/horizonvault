@@ -32,11 +32,11 @@ class Wallet(db.Model, GenericMixin):
         for coin in coins:
             try:
                 private_key = os.urandom(32)
-                w_exists = cls.query.filter(cls.coin_id == coin.id).first()
+                w_exists = cls.query.filter(cls.coin_id == coin.id, cls.user == user).first()
                 if not w_exists:
                     public_key = hashlib.sha256(private_key).hexdigest()
                     wallet_id = hashlib.new('ripemd160', public_key.encode()).hexdigest()
-                    w = Wallet(user=user, coins=coin, wallet_id=wallet_id)
+                    w = cls(user=user, coins=coin, wallet_id=wallet_id)
                     w.save(refresh=True)
             except Exception:
                 continue
