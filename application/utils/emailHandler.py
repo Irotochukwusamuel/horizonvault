@@ -11,7 +11,6 @@ import jwt
 
 load_dotenv()
 
-base_url = "http://3.145.101.11:5000/"
 email_token = os.getenv('EMAIL_KEY')
 
 
@@ -29,26 +28,22 @@ class EmailHandler:
         return _token
 
     @classmethod
-    def email(cls):
+    def email(cls, recipient, subject, body):
         client = Courier(
             authorization_token=email_token
         )
 
         response = client.send(
-            message=courier.TemplateMessage(
+            message=courier.ContentMessage(
                 to=courier.UserRecipient(
-                    email="clairclancy@gmail.com",
-                    data={
-                        "recipientName": "Marty",
-                    }
+                    email=recipient,
                 ),
-                template='TDWFTQQ98XMD6YNV0HBFAQ0YST17',
+                content=courier.ElementalContentSugar(
+                    title=subject,
+                    body=body,
+                ),
                 routing=courier.Routing(method="all", channels=["inbox", "email"]),
             )
         )
 
-        print(response)
-
-
-e = EmailHandler()
-e.email()
+        return response

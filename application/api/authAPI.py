@@ -34,6 +34,21 @@ def signup():
     return authenticationModel.signUp(email, password, username)
 
 
+@auth_blueprint.route('/verify-email', methods=['POST'])
+def email_verification():
+    req = request.json
+    email = req.get('email')
+    code = req.get('code')
+    return authenticationModel.emailVerification(email, code)
+
+
+@auth_blueprint.route('/resent-otp', methods=['POST'])
+def resent_otp():
+    req = request.json
+    email = req.get('email')
+    return authenticationModel.resent_otp(email)
+
+
 @auth_blueprint.route('/account-setup', methods=['GET'])
 @authenticate()
 def account_setup():

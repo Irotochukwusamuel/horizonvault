@@ -1,6 +1,8 @@
 import uuid
 from datetime import timedelta
-
+import datetime
+import random
+import string
 import jwt
 from flask_jwt_extended import create_access_token, create_refresh_token
 
@@ -11,7 +13,25 @@ from application import SECRET_KEY
 class Authentication:
 
     @staticmethod
-    def signUp(email: str, password: str, username: str):
+    def send_otp(user):
+        otp_code = ''.join(random.choices(string.digits, k=4))
+        expiration_time = datetime.datetime.now() + datetime.timedelta(minutes=2)
+        add_to_confirmation = ConfirmationCode(email=user.email, user_id=user.id, code=otp_code, expiration=expiration_time)
+        add_to_confirmation.save(refresh=True)
+        EmailHandler.email(user.email, "Email verification", f"Your one-time-password is {otp_code}")
+        return True
+
+    def resent_otp(self, email):
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            raise CustomException(message="User does not exist", status_code=404)
+        self.send_otp(user)
+        return return_json(OutputObj(
+            message=f"An OTP has been sent to {email} for verification",
+            code=200
+        ))
+
+    def signUp(self, email: str, password: str, username: str):
 
         if not email or not password or not username:
             raise CustomException(message="invalid data passed", status_code=401)
@@ -23,14 +43,11 @@ class Authentication:
             user = User.CreateUser(email, username, password.decode())
             user.referral_id = Referral.generate_referral_id(user.id)
             user.save(refresh=True)
-            access_token, refresh_token = User.generate_access_token(user)
-            return return_json(
-                OutputObj(
-                    message="Registration successful",
-                    data={"access_token": access_token, "refresh_token": refresh_token, 'expiration_in_seconds': 120, **user.to_dict()},
-                    code=200
-                )
-            )
+            self.send_otp(user)
+            return return_json(OutputObj(
+                message=f"An OTP has been sent to {email} for verification",
+                code=200
+            ))
         except Exception as e:
             raise e
 
@@ -87,7 +104,7 @@ class Authentication:
     @staticmethod
     def reset_password(email):
         if not email:
-            raise CustomException(message="invalid data passed", status_code=401)
+            raise CustomException(message="Invalid data passed", status_code=401)
 
         user: User = User.query.filter_by(email=email).first()
 
@@ -106,7 +123,14 @@ class Authentication:
 
         user.isEmailVerified = True
         user.save(refresh=True)
-        return "Email verified successfully"
+        access_token, refresh_token = User.generate_access_token(user)
+        return return_json(
+            OutputObj(
+                message="Email verified successfully",
+                data={"access_token": access_token, "refresh_token": refresh_token, 'expiration_in_seconds': 120, **user.to_dict()},
+                code=200
+            )
+        )
 
     @staticmethod
     def msisdnVerification(msisdn: str, code: str):
