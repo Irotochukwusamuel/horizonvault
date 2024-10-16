@@ -28,3 +28,17 @@ def authenticate():
         return decorated_function
 
     return decorator
+
+
+def is_admin():
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            user = get_current_user()
+            if not user.is_admin:
+                raise CustomException(ExceptionCode.ADMIN_ACCESS_REQUIRED)
+            return f(*args, **kwargs)
+
+        return decorated_function
+
+    return decorator

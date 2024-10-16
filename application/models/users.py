@@ -26,7 +26,7 @@ class User(db.Model, GenericMixin):
     isMsisdnVerified = db.Column(db.Boolean, default=False)
     has_email_notification_enabled = db.Column(db.Boolean, default=False)
     deactivate_reason = db.Column(db.String(450), nullable=True)
-
+    is_admin = db.Column(db.Boolean, default=False)
     wallets = db.relationship('Wallet', back_populates='user', cascade="all, delete")
     confirmation_codes = db.relationship('ConfirmationCode', back_populates='user', cascade="all, delete")
     referrals_made = db.relationship("Referral", back_populates="referrer", lazy='dynamic', foreign_keys='Referral.referrer_id')
@@ -73,6 +73,12 @@ class User(db.Model, GenericMixin):
     @classmethod
     def GetUser(cls, user_id):
         user = cls.query.filter_by(id=user_id).first()
+        if not user:
+            raise CustomException(message="User does not exist", status_code=404)
+        return user
+    @classmethod
+    def GetUserFromEmail(cls, email):
+        user = cls.query.filter_by(email=email).first()
         if not user:
             raise CustomException(message="User does not exist", status_code=404)
         return user
