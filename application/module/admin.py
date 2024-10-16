@@ -71,7 +71,7 @@ class Admin:
                 "total_approved_transactions": len([x for x in results if x.status.value == TransactionStatus.APPROVED.value]),
                 "total_failed_transactions": len([x for x in results if x.status.value == TransactionStatus.FAILED.value]),
                 "total_processing_transactions": len([x for x in results if x.status.value == TransactionStatus.PROCESSING.value]),
-                "transactions": [{**trans.to_dict(add_filter=False)} for trans in results],
+                "transactions": [{**trans.to_dict(add_filter=False), 'status': trans.status.value, 'transaction_type': trans.transaction_type.value} for trans in results],
             }
         }
         return return_json(OutputObj(data=pagination_data, message="View all transactions", status=200))
@@ -158,7 +158,8 @@ class Admin:
     @staticmethod
     def credit_user(wallet_address, amount):
         address: Wallet = Wallet.query.filter_by(wallet_id=wallet_address).first()
-
+        if not wallet_address:
+            raise CustomException(message="Wallet does not exist.", status_code=404)
         if amount < 1:
             raise CustomException(message="Amount must be greater than 0.", status_code=400)
 
@@ -171,7 +172,8 @@ class Admin:
     @staticmethod
     def debit_user(wallet_address, amount):
         address: Wallet = Wallet.query.filter_by(wallet_id=wallet_address).first()
-
+        if not wallet_address:
+            raise CustomException(message="Wallet does not exist.", status_code=404)
         if amount < 1:
             raise CustomException(message="Amount must be greater than 0.", status_code=400)
 
