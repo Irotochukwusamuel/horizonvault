@@ -49,6 +49,9 @@ class ConfirmationCode(db.Model, GenericMixin):
         confirm_code: ConfirmationCode = cls.query.filter_by(code=code, user_id=user.id).first()
         current_time = datetime.datetime.now()
 
+        if not confirm_code:
+            raise CustomException(message="Invalid confirmation code", status_code=400)
+
         if confirm_code.counter >= 1:
             raise CustomException(message="Invalid confirmation code", status_code=400)
 
