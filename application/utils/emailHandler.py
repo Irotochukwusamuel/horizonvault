@@ -47,3 +47,4 @@ class EmailHandler:
         )
 
         return response
+
