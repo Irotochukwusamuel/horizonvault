@@ -1,11 +1,4 @@
-import uuid
-from datetime import timedelta
-import datetime
-import random
-import string
 import jwt
-from flask_jwt_extended import create_access_token, create_refresh_token
-
 from . import *
 from application import SECRET_KEY
 
