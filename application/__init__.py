@@ -21,7 +21,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-CORS(app, origins="*")
+CORS(app, origins="*", supports_credentials=True)
 app.app_context().push()
 SECRET_KEY = os.getenv('SECRET_KEY')
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -44,6 +44,10 @@ database_name = database['database']
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{username}:{password}@{host}/{database_name}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_size': 10,        # Number of connections to maintain in the pool
+    'max_overflow': 20,     # Number of connections allowed beyond the pool_size
+}
 db: SQLAlchemy = SQLAlchemy(app)
 metadata = db.metadata
 
