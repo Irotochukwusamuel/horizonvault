@@ -1,9 +1,5 @@
-import random
-
-from sqlalchemy import or_
-
 from . import *
-from application.models.transactions import TransactionType, TransactionStatus
+from application.models.transactions import TransactionStatus
 
 
 class Admin:
