@@ -21,7 +21,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "https://horizonvaut.com"]}}, supports_credentials=True)
 app.app_context().push()
 SECRET_KEY = os.getenv('SECRET_KEY')
 app.config['SECRET_KEY'] = SECRET_KEY
