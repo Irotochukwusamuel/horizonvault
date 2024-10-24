@@ -60,7 +60,7 @@ def approve_transaction():
     return adminModel.approve_transaction(transaction_id)
 
 
-@admin_blueprint.route('/cancel-transaction', methods=['DELETE'])
+@admin_blueprint.route('/cancel-transaction', methods=['POST'])
 @authenticate()
 @is_admin()
 def cancel_transaction():
@@ -69,7 +69,7 @@ def cancel_transaction():
     return adminModel.cancel_transaction(transaction_id)
 
 
-@admin_blueprint.route('/deactivate-user', methods=['DELETE'])
+@admin_blueprint.route('/deactivate-user', methods=['POST'])
 @authenticate()
 @is_admin()
 def deactivate_user():
@@ -97,7 +97,7 @@ def add_wallet_address():
     return adminModel.add_wallet_address(wallet_address, coin_id)
 
 
-@admin_blueprint.route('/remove-wallet', methods=['DELETE'])
+@admin_blueprint.route('/remove-wallet', methods=['POST'])
 @authenticate()
 @is_admin()
 def remove_wallet_address():
@@ -117,7 +117,7 @@ def credit_user():
     return adminModel.credit_user(wallet_address, amount)
 
 
-@admin_blueprint.route('/debit-user', methods=['DELETE'])
+@admin_blueprint.route('/debit-user', methods=['POST'])
 @authenticate()
 @is_admin()
 def debit_user():
