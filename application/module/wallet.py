@@ -17,6 +17,14 @@ class Wallets:
         if not res:
             raise CustomException(message="Wallet not found", status_code=404)
         return res.to_dict()
+    
+
+    @classmethod
+    def get_user(cls):
+        user : User = User.GetUser(current_user.id)
+        if not user:
+            raise CustomException(ExceptionCode.ACCOUNT_NOT_FOUND)
+        return user.to_dict()
 
     @classmethod
     def list_wallet(cls):

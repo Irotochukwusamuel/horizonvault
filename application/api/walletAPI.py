@@ -13,6 +13,12 @@ def balance():
     return return_json(OutputObj(message="User balance", data=walletModel.list_wallet(), code=200))
 
 
+
+@wallet_blueprint.route('/get-user', methods=['GET'])
+@authenticate()
+def get_user():
+    return return_json(OutputObj(message="User", data=walletModel.get_user(), code=200))
+
 @wallet_blueprint.route('/deposit', methods=['POST'])
 @authenticate()
 def deposit():
