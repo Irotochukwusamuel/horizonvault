@@ -17,11 +17,10 @@ class Wallets:
         if not res:
             raise CustomException(message="Wallet not found", status_code=404)
         return res.to_dict()
-    
 
     @classmethod
     def get_user(cls):
-        user : User = User.GetUser(current_user.id)
+        user: User = User.GetUser(current_user.id)
         if not user:
             raise CustomException(ExceptionCode.ACCOUNT_NOT_FOUND)
         return user.to_dict()
@@ -30,6 +29,11 @@ class Wallets:
     def list_wallet(cls):
         wallets: List[Wallet] = current_user.wallets
         return [{**x.to_dict(), "wallet_name": x.coins.name} for x in wallets]
+
+    @classmethod
+    def list_all_wallets(cls):
+        coins: List[Coins] = Coins.query.all()
+        return [x.to_dict(add_filter=False) for x in coins]
 
     @classmethod
     def deposit(cls, wallet_name):
