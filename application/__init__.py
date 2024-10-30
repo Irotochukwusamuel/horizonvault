@@ -1,7 +1,6 @@
 import binascii
 from dotenv import load_dotenv
 from flask import Flask, send_from_directory
-from flask_socketio import SocketIO
 
 load_dotenv()
 import os
@@ -20,7 +19,6 @@ from exceptions.custom_exception import CustomException
 from flask_cors import CORS
 
 app = Flask(__name__)
-socketio = SocketIO(app)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "https://horizonvaut.com"]}}, supports_credentials=True)
 app.app_context().push()
 SECRET_KEY = os.getenv('SECRET_KEY')
