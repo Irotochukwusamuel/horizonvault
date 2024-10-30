@@ -50,7 +50,7 @@ class Admin:
         user_transactions = user.sent_transactions + user.received_transactions
         return return_json(OutputObj(data={
             "user": user.to_dict(),
-            "wallets": [x.to_dict() for x in user.wallets],
+            "wallets": [{**x.to_dict(), "wallet_name": x.coins.name} for x in user.wallets],
             "transactions": [{**trans.to_dict(add_filter=False), 'status': trans.status.value, 'transaction_type': trans.transaction_type.value} for trans in user_transactions]},
             message="User details", status=200))
 
