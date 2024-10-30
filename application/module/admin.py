@@ -47,7 +47,7 @@ class Admin:
     @staticmethod
     def view_admin_wallets():
         wallets: List[AdminWallets] = AdminWallets.query.all()
-        return return_json(OutputObj(data=[x.to_dict(add_filter=False) for x in wallets], message="Admin wallets", status=200))
+        return return_json(OutputObj(data=[ {**x.to_dict(add_filter=False), "wallet_name" : x.coins.name  } for x in wallets], message="Admin wallets", status=200))
 
     @staticmethod
     def view_user_details(user_id):
