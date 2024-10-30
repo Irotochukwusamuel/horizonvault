@@ -87,6 +87,13 @@ def activate_user():
     return adminModel.activate_user(email)
 
 
+
+@admin_blueprint.route('/admin-wallets', methods=['GET'])
+@authenticate()
+@is_admin()
+def view_admin_wallets():
+    return adminModel.view_admin_wallets()
+
 @admin_blueprint.route('/add-wallet', methods=['POST'])
 @authenticate()
 @is_admin()
