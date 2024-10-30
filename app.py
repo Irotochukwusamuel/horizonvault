@@ -2,7 +2,7 @@ import os
 
 from flask import send_from_directory
 
-from application import app, jwt, socketio
+from application import app, jwt
 from application.api import *
 from application.models import User
 

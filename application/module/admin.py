@@ -46,8 +46,13 @@ class Admin:
 
     @staticmethod
     def view_user_details(user_id):
-        user = User.GetUser(user_id)
-        return return_json(OutputObj(data=user.to_dict(), message="User details", status=200))
+        user: User = User.GetUser(user_id)
+        user_transactions = user.sent_transactions + user.received_transactions
+        return return_json(OutputObj(data={
+            "user": user.to_dict(),
+            "wallets": [x.to_dict() for x in user.wallets],
+            "transactions": [{**trans.to_dict(add_filter=False), 'status': trans.status.value, 'transaction_type': trans.transaction_type.value} for trans in user_transactions]},
+            message="User details", status=200))
 
     @staticmethod
     def view_all_transactions(page, per_page):

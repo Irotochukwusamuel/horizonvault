@@ -17,7 +17,7 @@ def add_as_admin():
     return adminModel.add_as_admin(email)
 
 
-@admin_blueprint.route('/remove-admin', methods=['DELETE'])
+@admin_blueprint.route('/remove-admin', methods=['POST'])
 @authenticate()
 @is_admin()
 def remove_as_admin():
