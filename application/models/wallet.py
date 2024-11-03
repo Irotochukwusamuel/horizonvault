@@ -25,6 +25,7 @@ class Wallet(db.Model, GenericMixin):
     user = db.relationship("User", back_populates='wallets')
     is_active = db.Column(db.Boolean, default=True)
     coins = db.relationship("Coins", back_populates='wallets')
+    investments = db.relationship("Investment", back_populates='wallets')
 
     @classmethod
     def generate_wallets(cls, user) -> bool:

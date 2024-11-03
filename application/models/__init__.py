@@ -6,6 +6,7 @@ from application.models.referrals import Referral
 from application.models.wallet import Coins, Wallet
 from application.models.admin import AdminWallets
 from application.models.transactions import Transactions
+from application.models.investments import InvestmentScheme, Investment
 
 
 

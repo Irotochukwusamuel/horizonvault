@@ -18,7 +18,8 @@ from application.helpers.UserHelper import Helper
 from application.Enums.Enums import BasicRoles
 from application.helpers.FileManager import FileFolder, FileHandler
 from application.utils.emailHandler import EmailHandler
-current_user = current_user
+
+current_user: User = current_user
 
 
 def enum_serializer(value):

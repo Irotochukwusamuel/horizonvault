@@ -34,6 +34,7 @@ class User(db.Model, GenericMixin):
     sent_transactions = db.relationship("Transactions", back_populates='sender_user', foreign_keys='Transactions.sender_id')
     received_transactions = db.relationship("Transactions", back_populates='receiver_user', foreign_keys='Transactions.receiver_id')
     transactions = db.relationship("Transactions", back_populates="user", cascade="all,delete", foreign_keys="Transactions.user_id")
+    investments = db.relationship("Investment", back_populates="user", cascade="all,delete")
 
     def as_dict(self, include_sensitive_info=False):
         """
