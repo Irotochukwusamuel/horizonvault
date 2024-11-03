@@ -1,7 +1,5 @@
 import os
 
-from flask import send_from_directory
-
 from application import app, jwt
 from application.api import *
 from application.models import User
@@ -12,10 +10,11 @@ EXEC_ENV = os.environ.get('EXEC_ENV')
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
 app.register_blueprint(wallet_blueprint, url_prefix='/wallet')
 app.register_blueprint(admin_blueprint, url_prefix='/admin')
+app.register_blueprint(investment_blueprint, url_prefix='/investment')
 
 
 @jwt.user_lookup_loader
-def _user_lookup_callback(_jwt_header, jwt_data):
+def _user_lookup_callback(_jwt_header, jwt_data) -> User:
     identity = jwt_data['sub']
     # Retrieve the user object based on the identity (user ID)
     user = User.query.filter_by(id=identity).first()

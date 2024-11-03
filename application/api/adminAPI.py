@@ -2,9 +2,11 @@ from flask import Blueprint, request
 from application.module.admin import Admin
 from application.module.authentication import Authentication
 from application.api import authenticate, is_admin
+from application.module.investments import InvestmentModule
 
 admin_blueprint = Blueprint('admin', __name__)
 authenticationModel = Authentication()
+investmentModel = InvestmentModule()
 adminModel = Admin()
 
 
@@ -87,12 +89,12 @@ def activate_user():
     return adminModel.activate_user(email)
 
 
-
 @admin_blueprint.route('/admin-wallets', methods=['GET'])
 @authenticate()
 @is_admin()
 def view_admin_wallets():
     return adminModel.view_admin_wallets()
+
 
 @admin_blueprint.route('/add-wallet', methods=['POST'])
 @authenticate()
@@ -132,3 +134,52 @@ def debit_user():
     wallet_address = req.get('wallet_address')
     amount = req.get('amount')
     return adminModel.debit_user(wallet_address, amount)
+
+
+'''
+   INVESTMENT API REQUEST 
+'''
+
+
+@admin_blueprint.route('/investment/status', methods=['POST'])
+@authenticate()
+@is_admin()
+def update_investment_status():
+    req = request.get_json()
+    investment_id = req.get('investment_id')
+    status = req.get('status')
+    return investmentModel.update_investment_status(investment_id, status)
+
+
+@admin_blueprint.route('/investment/<int:id>', methods=['DELETE'])
+@authenticate()
+@is_admin()
+def delete_investment(id):
+    return investmentModel.delete_investment(id)
+
+
+@admin_blueprint.route('/investment', methods=['GET'])
+@authenticate()
+@is_admin()
+def get_all_investments():
+    return investmentModel.get_all_investments()
+
+
+@admin_blueprint.route('/schemes/<int:id>', methods=['DELETE'])
+@authenticate()
+@is_admin()
+def delete_scheme(id):
+    return investmentModel.delete_investment_scheme(id)
+
+
+@admin_blueprint.route('/schemes', methods=['POST'])
+@authenticate()
+@is_admin()
+def add_scheme():
+    req = request.get_json()
+    name = req.get('name')
+    rate = req.get('rate')
+    minimum = req.get('minimum')
+    maximum = req.get('maximum')
+    interval = req.get('interval')
+    return investmentModel.add_investment_scheme(name, rate, minimum, maximum, interval)
