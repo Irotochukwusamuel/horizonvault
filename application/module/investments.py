@@ -97,8 +97,7 @@ class InvestmentModule:
             "deposit_type": invest.deposit_type.value,
             "investment_name": invest.scheme.name,
             "investment_rate": invest.scheme.rate,
-            "investment_interval": invest.scheme.interval.value,
-
+            "investment_interval": invest.scheme.interval.value
         }
 
         if invest.wallet_id:
@@ -106,7 +105,6 @@ class InvestmentModule:
                 "wallet_id": invest.wallet_id,
                 "wallet_name": invest.wallets.name
             })
-
         return res
 
     @classmethod
