@@ -57,7 +57,7 @@ class Seed:
                     print(f"Adding {name} coin")
                     coin_exist = Coins.query.filter(Coins.name == name).first()
                     if not coin_exist:
-                        coin = Coins(name=name, symbol=symbol)
+                        coin = Coins(name=name, symbol=symbol.strip())
                         coin.save(refresh=True)
                 except Exception as e:
                     db.session.rollback()

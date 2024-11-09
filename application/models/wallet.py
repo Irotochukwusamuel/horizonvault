@@ -6,11 +6,13 @@ import os
 import hashlib
 
 
+
 class Coins(db.Model, GenericMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=True, unique=True)
     symbol = db.Column(db.Text, nullable=True, unique=True)
     logo = db.Column(db.Text, nullable=True, unique=True)
+    rate = db.Column(db.Float, nullable=True, default=1)
     wallets = db.relationship("Wallet", back_populates='coins')
     transactions = db.relationship("Transactions", back_populates='coins')
     admin_wallets = db.relationship("AdminWallets", back_populates='coins')

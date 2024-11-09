@@ -1,7 +1,6 @@
-import random
-from typing import Literal, Union, List
+from typing import List
 from application.models import *
-from application.models.investments import InvestmentStatus, DepositType, InvestmentInterval
+from application.models.investments import InvestmentStatus, InvestmentInterval
 import datetime
 
 
@@ -15,7 +14,7 @@ def get_total_hours(interval: InvestmentInterval) -> int:
         InvestmentInterval.TRIDAYS: 3 * 24,
         InvestmentInterval.BIDAYS: 2 * 24,
     }
-    return interval_to_hours.get(interval, 0)  # Returns 0 if the interval is not found
+    return interval_to_hours.get(interval, None)
 
 
 def run_jobs():
@@ -30,8 +29,8 @@ def run_jobs():
         total_hours = round(time_difference.total_seconds() / 3600)
         maturity_hours = get_total_hours(interval)
         print(f"{user} has {maturity_hours} hours of maturity")
-        if total_hours >= maturity_hours:
-            usdt_coin: Coins = Coins.query.filter(Coins.symbol == "USDC").first()
+        if maturity_hours and total_hours >= maturity_hours:
+            usdt_coin: Coins = Coins.query.filter(Coins.id == 6).first()
             usdt_wallet: Wallet = Wallet.query.filter(Wallet.coin_id == usdt_coin.id, Wallet.user_id == user.id).first()
             usdt_wallet.balance += each.amount
             usdt_wallet.save()

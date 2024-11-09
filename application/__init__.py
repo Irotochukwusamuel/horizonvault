@@ -46,6 +46,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_size': 10,
     'max_overflow': 20,
+    'pool_timeout': 130,
+    'pool_recycle': 1800
 }
 db: SQLAlchemy = SQLAlchemy(app)
 metadata = db.metadata
@@ -92,6 +94,7 @@ def error_handling(error):
         error = CustomException()
         message = error.message
         code = error.status_code
+        db.session.rollback()
         db.session.close()
 
     output = OutputObj(code=code, message=message, response_code=response_code)
