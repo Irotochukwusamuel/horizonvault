@@ -1,6 +1,10 @@
+import concurrent.futures
 import random
+from typing import Callable
 
+import httpx, asyncio, os
 from sqlalchemy import or_
+from sqlalchemy.orm import joinedload
 
 from . import *
 from application.models.transactions import TransactionType, TransactionStatus
@@ -27,8 +31,21 @@ class Wallets:
 
     @classmethod
     def list_wallet(cls):
-        wallets: List[Wallet] = current_user.wallets
-        return [{**x.to_dict(), "wallet_name": x.coins.name} for x in wallets]
+        wallets: List[Wallet] = (
+            Wallet.query
+            .options(joinedload(Wallet.coins))
+            .filter(Wallet.user_id == current_user.id)
+            .all()
+        )
+
+        wallet_list = [{
+            **w.to_dict(),
+            "wallet_name": w.coins.name,
+            "wallet_symbol": w.coins.symbol,
+            "total": int(w.balance) / (w.coins.rate if w.coins.rate not in [0, None, ''] else 1) if w.coins.symbol != "USDC" else w.balance
+        } for w in wallets]
+
+        return wallet_list
 
     @classmethod
     def list_all_wallets(cls):
