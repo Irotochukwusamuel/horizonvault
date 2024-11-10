@@ -97,7 +97,10 @@ class InvestmentModule:
             "deposit_type": invest.deposit_type.value,
             "investment_name": invest.scheme.name,
             "investment_rate": invest.scheme.rate,
-            "investment_interval": invest.scheme.interval.value
+            "investment_interval": invest.scheme.interval.value,
+            "email": invest.user.email,
+            "first_name": invest.user.first_name,
+            "last_name": invest.user.last_name,
         }
 
         if invest.wallet_id:
