@@ -29,6 +29,23 @@ def get_payment_wallet():
     return investmentModel.payment_wallet()
 
 
+@investment_blueprint.route('/coins', methods=['GET'])
+@authenticate()
+@response_decorator
+def get_all_coins():
+    return investmentModel.get_coins()
+
+
+@investment_blueprint.route('/update-coin-rate', methods=['POST'])
+@authenticate()
+@response_decorator
+def update_coin_rate():
+    req = request.get_json()
+    coin_id = req.get('coin_id')
+    rate = req.get('rate')
+    return investmentModel.update_coin_rate(coin_id, rate)
+
+
 @investment_blueprint.route('/confirm-payment', methods=['POST'])
 @authenticate()
 @response_decorator
