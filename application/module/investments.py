@@ -69,6 +69,20 @@ class InvestmentModule:
         return random.choice(wallet_list) if wallet_list else "No wallet address available at the moment"
 
     @classmethod
+    def get_coins(cls):
+        return [x.to_dict(add_filter=False) for x in Coins.query.all()]
+
+    @classmethod
+    @required_arguments_exist
+    def update_coin_rate(cls, coin_id: int, rate: Union[int, float]):
+        coin: Coins = Coins.query.filter_by(id=coin_id).first()
+        if not coin:
+            raise CustomException(message="Coin not found", status_code=404)
+        coin.rate = rate
+        coin.save(refresh=True)
+        return "Coin has been updated."
+
+    @classmethod
     @required_arguments_exist
     def confirm_payment(cls, investment_id: int):
         cls.update_investment_status(investment_id, InvestmentStatus.PENDING.value)
@@ -135,7 +149,7 @@ class InvestmentModule:
     @required_arguments_exist
     def delete_investment_scheme(cls, scheme_id: int):
         scheme: InvestmentScheme = InvestmentScheme.query.filter(InvestmentScheme.id == scheme_id).first()
-        investment_schemes : List[Investment] = scheme.investments
+        investment_schemes: List[Investment] = scheme.investments
         if any([x.status.value == "approved" for x in investment_schemes]):
             raise CustomException(message="There are investment currently running on this scheme", status_code=400)
         scheme.delete()
