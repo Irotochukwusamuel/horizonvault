@@ -24,11 +24,11 @@ class InvestmentStatus(enum.Enum):
 class InvestmentInterval(enum.Enum):
     DAILY = 'daily'
     MONTHLY = 'monthly'
-    BIWEEKLY = 'bi-weekly'
+    BIWEEKLY = 'biweekly'
     WEEKLY = 'weekly'
     YEARLY = 'yearly'
-    TRIDAYS = 'tri-days'
-    BIDAYS = 'bi-days'
+    TRIDAYS = 'tridays'
+    BIDAYS = 'bidays'
 
 
 class InvestmentScheme(db.Model, GenericMixin):

@@ -129,12 +129,15 @@ class InvestmentModule:
     @classmethod
     def get_investment_schemes(cls):
         schemes: List[InvestmentScheme] = InvestmentScheme.query.all()
-        return [{**x.to_dict(), "interval": x.interval.value} for x in schemes]
+        return [{**x.to_dict(add_filter=False), "interval": x.interval.value} for x in schemes]
 
     @classmethod
     @required_arguments_exist
     def delete_investment_scheme(cls, scheme_id: int):
         scheme: InvestmentScheme = InvestmentScheme.query.filter(InvestmentScheme.id == scheme_id).first()
+        investment_schemes : List[Investment] = scheme.investments
+        if any([x.status.value == "approved" for x in investment_schemes]):
+            raise CustomException(message="There are investment currently running on this scheme", status_code=400)
         scheme.delete()
         return return_json(OutputObj(message=f"Investment scheme has been successfully deleted."))
 
@@ -153,7 +156,6 @@ class InvestmentModule:
 
         if scheme_exist:
             raise CustomException(message="Scheme name already exists", status_code=401)
-
         scheme_add = InvestmentScheme(name=name, rate=rate, minimum=minimum, maximum=maximum, interval=interval)
-        scheme_add.save(refresh=True)
+        scheme_add.save()
         return return_json(OutputObj(message=f"Investment scheme has been successfully added."))
