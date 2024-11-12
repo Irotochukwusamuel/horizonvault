@@ -6,4 +6,5 @@ class AdminWallets(db.Model, GenericMixin):
     id = db.Column(db.Integer, primary_key=True)
     coin_id = db.Column(db.Integer, db.ForeignKey('coins.id'))
     wallet_id = db.Column(db.Text, nullable=True)
+    wallet_network = db.Column(db.Text, nullable=True)
     coins = db.relationship("Coins", back_populates='admin_wallets')

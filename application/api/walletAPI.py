@@ -12,6 +12,7 @@ walletModel = Wallets()
 def balance():
     return return_json(OutputObj(message="User balance", data=walletModel.list_wallet(), code=200))
 
+
 @wallet_blueprint.route('/wallets', methods=['GET'])
 @authenticate()
 def wallets():
