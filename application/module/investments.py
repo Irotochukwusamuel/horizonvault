@@ -66,7 +66,8 @@ class InvestmentModule:
     @classmethod
     def payment_wallet(cls):
         wallet_list = AdminWallets.query.all()
-        return random.choice(wallet_list) if wallet_list else "No wallet address available at the moment"
+        res = random.choice(wallet_list) if wallet_list else "No wallet address available at the moment"
+        return {**res.to_dict(add_filter=False), **res.coins.to_dict(add_filter=False)} if isinstance(res, AdminWallets) else res
 
     @classmethod
     def get_coins(cls):
