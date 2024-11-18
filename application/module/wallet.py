@@ -153,11 +153,14 @@ class Wallets:
 
     @classmethod
     def swap(cls, from_wallet, to_wallet, amount):
-        convert_from: Wallet = Wallet.query.filter(Wallet.id == from_wallet.id).first()
-        convert_to: Wallet = Wallet.query.filter(Wallet.id == to_wallet.id).first()
 
+        if amount <= 0:
+            raise CustomException(message="Amount must be greater than zero.", status_code=400)
+
+        convert_from: Wallet = Wallet.query.join(Coins).filter(Coins.name == from_wallet).first()
+        convert_to: Wallet = Wallet.query.join(Coins).filter(Coins.name == to_wallet).first()
         if not convert_from or not convert_to:
-            raise CustomException(message="Wallet not found.", status_code=404)
+            raise CustomException(message="One or both wallets not found.", status_code=404)
 
         if amount > convert_from.balance:
             raise CustomException(ExceptionCode.INSUFFICIENT_FUNDS)

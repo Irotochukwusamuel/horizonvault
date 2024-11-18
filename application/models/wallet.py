@@ -4,7 +4,8 @@ from application import db
 from application.Mixins.GenericMixins import GenericMixin
 import os
 import hashlib
-
+from exceptions.codes import ExceptionCode
+from exceptions.custom_exception import CustomException
 
 
 class Coins(db.Model, GenericMixin):
@@ -16,6 +17,13 @@ class Coins(db.Model, GenericMixin):
     wallets = db.relationship("Wallet", back_populates='coins')
     transactions = db.relationship("Transactions", back_populates='coins')
     admin_wallets = db.relationship("AdminWallets", back_populates='coins')
+
+    @classmethod
+    def get_coin_by_name(cls, name) -> 'Coins':
+        coin = cls.query.filter_by(name=name).first()
+        if not coin:
+            raise CustomException(message="Coin not found", status_code=404)
+        return coin
 
 
 class Wallet(db.Model, GenericMixin):
