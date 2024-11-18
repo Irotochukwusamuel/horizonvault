@@ -1,8 +1,3 @@
-import concurrent.futures
-import random
-from typing import Callable
-
-import httpx, asyncio, os
 from sqlalchemy import or_
 from sqlalchemy.orm import joinedload
 
@@ -155,3 +150,19 @@ class Wallets:
             }
             for x in trans
         ]
+
+    @classmethod
+    def swap(cls, from_wallet, to_wallet, amount):
+        convert_from: Wallet = Wallet.query.filter(Wallet.id == from_wallet.id).first()
+        convert_to: Wallet = Wallet.query.filter(Wallet.id == to_wallet.id).first()
+
+        if not convert_from or not convert_to:
+            raise CustomException(message="Wallet not found.", status_code=404)
+
+        if amount > convert_from.balance:
+            raise CustomException(ExceptionCode.INSUFFICIENT_FUNDS)
+
+        convert_from.balance -= amount
+        convert_to.balance += amount
+        db.session.commit()
+        return "Swap successful."
