@@ -104,7 +104,7 @@ def add_wallet_address():
     wallet_address = req.get('wallet_address')
     coin_id = req.get('coin_id')
     wallet_network = req.get('wallet_network')
-    return adminModel.add_wallet_address(wallet_address, coin_id)
+    return adminModel.add_wallet_address(wallet_address, coin_id, wallet_network)
 
 
 @admin_blueprint.route('/remove-wallet', methods=['POST'])

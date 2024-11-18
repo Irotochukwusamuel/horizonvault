@@ -64,8 +64,11 @@ class InvestmentModule:
         return message
 
     @classmethod
-    def payment_wallet(cls):
-        wallet_list = AdminWallets.query.all()
+    def payment_wallet(cls, coin_id):
+        wallet_list = AdminWallets.query.filter(AdminWallets.coin_id == coin_id).all()
+        if not wallet_list:
+            wallet_list = AdminWallets.query.filter(AdminWallets.coin_id == 1).all()
+
         res = random.choice(wallet_list) if wallet_list else "No wallet address available at the moment"
         return {**res.to_dict(add_filter=False), **res.coins.to_dict(add_filter=False)} if isinstance(res, AdminWallets) else res
 
