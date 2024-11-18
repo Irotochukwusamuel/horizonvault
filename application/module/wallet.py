@@ -158,12 +158,18 @@ class Wallets:
 
         convert_from: Wallet = Wallet.query.join(Coins).filter(Coins.name == from_wallet, Wallet.user == current_user).first()
         convert_to: Wallet = Wallet.query.join(Coins).filter(Coins.name == to_wallet, Wallet.user == current_user).first()
+
         if not convert_from or not convert_to:
             raise CustomException(message="One or both wallets not found.", status_code=404)
-        if amount > convert_from.balance:
+
+        total_coin = convert_from.balance / convert_from.coins.rate
+
+        if amount > total_coin:
             raise CustomException(ExceptionCode.INSUFFICIENT_FUNDS)
 
-        convert_from.balance -= amount
-        convert_to.balance += amount
+        amount_topUp = amount * convert_from.coins.rate
+
+        convert_from.balance -= amount_topUp
+        convert_to.balance += amount_topUp
         db.session.commit()
         return "Swap successful."
