@@ -47,7 +47,7 @@ class Admin:
     @staticmethod
     def view_admin_wallets():
         wallets: List[AdminWallets] = AdminWallets.query.all()
-        return return_json(OutputObj(data=[ {**x.to_dict(add_filter=False), "wallet_name" : x.coins.name  } for x in wallets], message="Admin wallets", status=200))
+        return return_json(OutputObj(data=[{**x.to_dict(add_filter=False), "wallet_name": x.coins.name} for x in wallets], message="Admin wallets", status=200))
 
     @staticmethod
     def view_user_details(user_id):
@@ -142,11 +142,11 @@ class Admin:
         ))
 
     @staticmethod
-    def add_wallet_address(wallet_address, coin_id):
+    def add_wallet_address(wallet_address, coin_id, wallet_network):
         coins = Coins.query.filter(Coins.id == coin_id).first()
         if not coins:
             raise CustomException(message="Coin does not exist.", status_code=404)
-        create_address = AdminWallets(coin_id=coin_id, wallet_id=wallet_address)
+        create_address = AdminWallets(coin_id=coin_id, wallet_id=wallet_address, wallet_network=wallet_network)
         create_address.save()
         return return_json(OutputObj(message=f"{wallet_address} has been successfully added.", code=200))
 

@@ -103,6 +103,7 @@ def add_wallet_address():
     req = request.get_json()
     wallet_address = req.get('wallet_address')
     coin_id = req.get('coin_id')
+    wallet_network = req.get('wallet_network')
     return adminModel.add_wallet_address(wallet_address, coin_id)
 
 

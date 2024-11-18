@@ -54,6 +54,16 @@ def transfer():
     return return_json(OutputObj(message="Transfer Successful", data=walletModel.transfer(source, receiver, amount), code=200))
 
 
+@wallet_blueprint.route('/swap', methods=['POST'])
+@authenticate()
+def swap():
+    req = request.get_json()
+    amount = req.get('amount')
+    from_wallet = req.get('from_wallet')
+    to_wallet = req.get('to_wallet')
+    return return_json(OutputObj(message="Swap Successful", data=walletModel.swap(from_wallet, to_wallet, amount), code=200))
+
+
 @wallet_blueprint.route('/history', methods=['GET'])
 @authenticate()
 def history():
