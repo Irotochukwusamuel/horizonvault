@@ -22,11 +22,11 @@ def create_investment():
     return investmentModel.create_investment(data)
 
 
-@investment_blueprint.route('/payment-wallet', methods=['GET'])
+@investment_blueprint.route('/payment-wallet/<int:coin_id>', methods=['GET'])
 @authenticate()
 @response_decorator
-def get_payment_wallet():
-    return investmentModel.payment_wallet()
+def get_payment_wallet(coin_id):
+    return investmentModel.payment_wallet(coin_id)
 
 
 @investment_blueprint.route('/coins', methods=['GET'])
