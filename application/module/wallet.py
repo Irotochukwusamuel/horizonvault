@@ -37,7 +37,7 @@ class Wallets:
             **w.to_dict(),
             "wallet_name": w.coins.name,
             "wallet_symbol": w.coins.symbol,
-            "total": int(w.balance) / (w.coins.rate if w.coins.rate not in [0, None, ''] else 1) if w.coins.symbol != "USDC" else w.balance
+            "total": int(w.balance) * (w.coins.rate if w.coins.rate not in [0, None, ''] else 1) if w.coins.symbol != "USDC" else w.balance
         } for w in wallets]
 
         return wallet_list
@@ -162,14 +162,12 @@ class Wallets:
         if not convert_from or not convert_to:
             raise CustomException(message="One or both wallets not found.", status_code=404)
 
-        total_coin = convert_from.balance / convert_from.coins.rate
-
-        if amount > total_coin:
+        if amount > convert_from.balance:
             raise CustomException(ExceptionCode.INSUFFICIENT_FUNDS)
 
-        amount_topUp = amount * convert_from.coins.rate
+        amount_topUp = (amount * convert_from.coins.rate) / (amount * convert_to.coins.rate)
 
-        convert_from.balance -= amount_topUp
+        convert_from.balance -= amount
         convert_to.balance += amount_topUp
         db.session.commit()
         return "Swap successful."
