@@ -165,8 +165,8 @@ class Wallets:
         if amount > convert_from.balance:
             raise CustomException(ExceptionCode.INSUFFICIENT_FUNDS)
 
-        amount_topUp = (amount * convert_from.coins.rate) / (amount * convert_to.coins.rate)
-
+        amount_topUp = (amount * convert_from.coins.rate) / convert_to.coins.rate
+        print("amount_topUp", amount_topUp)
         convert_from.balance -= amount
         convert_to.balance += amount_topUp
         db.session.commit()
