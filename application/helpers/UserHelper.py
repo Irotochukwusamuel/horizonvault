@@ -23,7 +23,7 @@ class Helper:
         expiration_time = datetime.datetime.now() + datetime.timedelta(minutes=2)
         add_to_confirmation = ConfirmationCode(email=user.email, user_id=user.id, code=otp_code, expiration=expiration_time)
         add_to_confirmation.save(refresh=True)
-        EmailHandler.send_otp(user.email, otp_code)
+        EmailHandler.email(user.email, "Forgot Password", f"Your forgot password OTP is : {otp_code}")
         return f"OTP code has been sent to {user.email}"
 
     @classmethod
