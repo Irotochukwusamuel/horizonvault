@@ -97,7 +97,7 @@ class InvestmentModule:
         invest = Investment.get_investment(investment_id)
         invest.status = status
         invest.save()
-        EmailHandler.email(invest.user_id, "Investment", f"Your Investment has been updated to {status}")
+        EmailHandler.email(invest.user.email, "Investment", f"Your Investment has been updated to {status}")
         return return_json(OutputObj(message=f"Investment status has been successfully updated."))
 
     @classmethod
