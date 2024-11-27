@@ -28,6 +28,10 @@ class EmailHandler:
         return _token
 
     @classmethod
+    def handle_admin_notification(cls, subject, message):
+        cls.email('info@horizonvaut.com', subject, message)
+
+    @classmethod
     def email(cls, recipient, subject, body):
         client = Courier(
             authorization_token=email_token
@@ -47,4 +51,3 @@ class EmailHandler:
         )
 
         return response
-

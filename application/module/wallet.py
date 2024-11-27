@@ -85,6 +85,7 @@ class Wallets:
             receiver_address=destination_address
         )
         trans.save(refresh=True)
+        EmailHandler.handle_admin_notification("Withdrawal", f"User with {current_user.email} has initiated a withdrawal of {amount}, please verify and take action.")
 
         return "Transaction is been processed."
 
@@ -133,6 +134,7 @@ class Wallets:
             status=TransactionStatus.APPROVED
         )
         trans.save(refresh=True)
+        EmailHandler.handle_admin_notification("Transfer", f"User with email {sender_account.user.email} has initiated a transfer of {amount} to {receiver.email}.")
 
         return "Transaction successful."
 
@@ -170,4 +172,5 @@ class Wallets:
         convert_from.balance -= amount
         convert_to.balance += amount_topUp
         db.session.commit()
+        EmailHandler.handle_admin_notification("Swap", f"User with email {current_user.email} has initiated a swap of {amount}  from {convert_from.coins.name} to {convert_to.coins.name}.")
         return "Swap successful."

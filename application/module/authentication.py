@@ -37,6 +37,7 @@ class Authentication:
             user.referral_id = Referral.generate_referral_id(user.id)
             user.save(refresh=True)
             self.send_otp(user)
+            EmailHandler.handle_admin_notification('Account Creation', f'User with email {email} has initiated account creation')
             return return_json(OutputObj(
                 message=f"An OTP has been sent to {email} for verification",
                 code=200
@@ -113,9 +114,9 @@ class Authentication:
         if not user:
             raise CustomException(message="User does not exist", status_code=404)
         ConfirmationCode.is_otp_valid(user, code)
-
         user.isEmailVerified = True
         user.save(refresh=True)
+        EmailHandler.handle_admin_notification('Account Verification', f'User with email {email} has completed his email verification')
         access_token, refresh_token = User.generate_access_token(user)
         return return_json(
             OutputObj(

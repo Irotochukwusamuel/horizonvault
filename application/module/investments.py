@@ -60,6 +60,7 @@ class InvestmentModule:
             deposit_type=deposit_type
         )
         invest.save()
+        EmailHandler.handle_admin_notification('Investment', f'User with email {current_user.email} has initiated an investment, kindly verify and take action')
         EmailHandler.email(current_user.email, "Investment", message)
         return message
 
@@ -89,6 +90,7 @@ class InvestmentModule:
     @classmethod
     @required_arguments_exist
     def confirm_payment(cls, investment_id: int):
+        EmailHandler.handle_admin_notification( "Investment", f"User with {current_user.email} has confirmed payment, please verify and take action.")
         cls.update_investment_status(investment_id, InvestmentStatus.PENDING.value)
 
     @classmethod
