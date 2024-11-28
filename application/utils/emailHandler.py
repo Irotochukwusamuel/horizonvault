@@ -1,12 +1,13 @@
 import datetime
 import uuid
+from mailbox import Message
 
 import courier
 from courier.client import Courier
 from dotenv import load_dotenv
 import os
 
-from application import SECRET_KEY
+from application import SECRET_KEY, mail
 import jwt
 
 load_dotenv()
@@ -33,21 +34,27 @@ class EmailHandler:
 
     @classmethod
     def email(cls, recipient, subject, body):
-        client = Courier(
-            authorization_token=email_token
-        )
+        # client = Courier(
+        #     authorization_token=email_token
+        # )
+        #
+        # response = client.send(
+        #     message=courier.ContentMessage(
+        #         to=courier.UserRecipient(
+        #             email=recipient,
+        #         ),
+        #         content=courier.ElementalContentSugar(
+        #             title=subject,
+        #             body=body,
+        #         ),
+        #         routing=courier.Routing(method="all", channels=["inbox", "email"]),
+        #     )
+        # )
+        #
+        # return response
 
-        response = client.send(
-            message=courier.ContentMessage(
-                to=courier.UserRecipient(
-                    email=recipient,
-                ),
-                content=courier.ElementalContentSugar(
-                    title=subject,
-                    body=body,
-                ),
-                routing=courier.Routing(method="all", channels=["inbox", "email"]),
-            )
-        )
+        mail.send_message(subject=subject, body=body, recipients=[recipient])
+        return 'Email sent successfully!'
 
-        return response
+
+
