@@ -2,6 +2,7 @@ import binascii
 from dotenv import load_dotenv
 from flask import Flask, send_from_directory
 from flask_socketio import SocketIO
+from flask_mail import Mail, Message
 
 load_dotenv()
 import os
@@ -20,6 +21,14 @@ from exceptions.custom_exception import CustomException
 from flask_cors import CORS
 
 app = Flask(__name__)
+
+app.config['MAIL_SERVER'] = 'mail.horizonvaut.com'           # Replace with your SMTP server
+app.config['MAIL_PORT'] = 587                          # Common port for SMTP
+app.config['MAIL_USE_TLS'] = True                      # Use TLS for security
+app.config['MAIL_USERNAME'] = 'service@horizonvaut.com'    # Your email address
+app.config['MAIL_PASSWORD'] = '1Greatdeal'           # Your email password or app-specific password
+app.config['MAIL_DEFAULT_SENDER'] = 'info@horizonvaut.com' # Default sender for emails
+
 socketio = SocketIO(app)
 CORS(app, origins="*", supports_credentials=True)
 app.app_context().push()
@@ -28,7 +37,7 @@ app.config['SECRET_KEY'] = SECRET_KEY
 app.config["ENVIRONMENT"] = "local"
 environment = str(app.config["ENVIRONMENT"]).lower()
 print(f"APPLICATION IS RUNNING ON : {environment}")
-
+mail = Mail(app)
 jwt = JWTManager(app)
 
 database = DB_SETUP[environment]
